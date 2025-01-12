@@ -4,7 +4,7 @@ import prisma from "@/lib/primsa";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-export const deleteWorkflow = async (id: string) => {
+export const DeleteWorkflow = async (id: string) => {
   const { userId } = auth();
 
   if (!userId) {

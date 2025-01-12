@@ -20,8 +20,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import CustomDialogHeader from "@/components/CustomDialogHeader";
 
-import { createWorkflowSchema, TCreateWorkflowSchema } from "@/schema/workflow";
-import { createWorkflow } from "@/actions/createWorkflow";
+import { CreateWorkflowSchema, TCreateWorkflowSchema } from "@/schema/workflow";
+import { CreateWorkflow } from "@/actions/createWorkflow";
+
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +31,7 @@ const CreateWorflowDialog = ({ triggerText }: { triggerText?: string }) => {
   const [open, setOpen] = React.useState(false);
 
   const form = useForm<TCreateWorkflowSchema>({
-    resolver: zodResolver(createWorkflowSchema),
+    resolver: zodResolver(CreateWorkflowSchema),
     defaultValues: {
       name: undefined,
       description: undefined,
@@ -38,7 +39,7 @@ const CreateWorflowDialog = ({ triggerText }: { triggerText?: string }) => {
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: createWorkflow,
+    mutationFn: CreateWorkflow,
     onSuccess: () => {
       toast.success("Workflow created", { id: "create-workflow" });
     },

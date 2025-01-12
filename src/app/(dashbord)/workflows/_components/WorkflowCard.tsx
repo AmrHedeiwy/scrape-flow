@@ -1,22 +1,27 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { WorkflowStatus } from "@/types/workflow";
-import { Workflow } from "@prisma/client";
-import { FileTextIcon, PlayIcon, ShuffleIcon } from "lucide-react";
 import React from "react";
-import { STATUS_COLORS } from "../_constants/status-colors";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+
+import { FileTextIcon, PlayIcon, ShuffleIcon } from "lucide-react";
+
+import { WorkflowStatus } from "@/types/workflow";
+
+import { cn } from "@/lib/utils";
 import { ICON_SIZE } from "@/constants/icon-size";
+import { STATUS_COLORS } from "../_constants/status-colors";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
+
+import { Workflow } from "@prisma/client";
 import WorkflowActions from "./WorkflowActions";
 
 const WorkflowCard = ({ workflow }: { workflow: Workflow }) => {
   const isDraft = workflow.status === WorkflowStatus.DRAFT;
 
   return (
-    <Card className="shadow-s, dard:shadow-primary/30 border-separate overflow-hidden rounded-lg border hover:shadow-md">
+    <Card className="border-separate overflow-hidden rounded-lg border shadow-sm transition hover:shadow-md dark:shadow-primary/30">
       <CardContent className="flex h-[100px] items-center justify-between p-4">
         <div className="flex items-center justify-end space-x-3">
           <div
