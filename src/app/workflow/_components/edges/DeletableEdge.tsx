@@ -1,7 +1,9 @@
 "use client";
 
+import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ICON_SIZE } from "@/constants/icon-size";
+
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -9,15 +11,37 @@ import {
   getSmoothStepPath,
   useReactFlow,
 } from "@xyflow/react";
-import { XIcon } from "lucide-react";
-import React from "react";
+import React, { useState, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 const DeletableEdge = (props: EdgeProps) => {
   const [edgePath, labelX, labelY] = getSmoothStepPath(props);
   const { setEdges } = useReactFlow();
 
+  const [isHovered, setIsHovered] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (!timeoutRef.current) {
+      setIsHovered(true);
+    } else {
+      clearTimeout(timeoutRef.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = null;
+      setIsHovered(false);
+    }, 600);
+  };
+
   return (
-    <>
+    <g onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <BaseEdge
         path={edgePath}
         markerEnd={props.markerEnd}
@@ -25,10 +49,13 @@ const DeletableEdge = (props: EdgeProps) => {
       />
       <EdgeLabelRenderer>
         <div
+          className={cn("transition-opacity duration-300", {
+            "pointer-events-none opacity-0": !isHovered,
+            "pointer-events-auto opacity-100": isHovered,
+          })}
           style={{
             position: "absolute",
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
-            pointerEvents: "all",
           }}
         >
           <Button
@@ -43,7 +70,7 @@ const DeletableEdge = (props: EdgeProps) => {
           </Button>
         </div>
       </EdgeLabelRenderer>
-    </>
+    </g>
   );
 };
 
