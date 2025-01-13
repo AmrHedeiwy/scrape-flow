@@ -28,7 +28,7 @@ const NodeHeader = ({ taskType }: { taskType: TaskType }) => {
           <Button
             variant="ghost"
             size="icon"
-            className="drag-handle cursor-grab"
+            className="drag-handle cursor-grab active:cursor-grabbing"
           >
             <GripVerticalIcon size={ICON_SIZE.M} />
           </Button>
