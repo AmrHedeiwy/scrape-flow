@@ -10,6 +10,7 @@ import {
   Connection,
   Controls,
   Edge,
+  getOutgoers,
   ReactFlow,
   useEdgesState,
   useNodesState,
@@ -24,6 +25,7 @@ import { TaskType } from "@/types/task";
 import { CreateFlowNode } from "@/lib/workflow/create-flow-node";
 import { IWorkflowNode } from "@/types/workflow-node";
 import DeletableEdge from "./edges/DeletableEdge";
+import { TaskRegistry } from "@/lib/workflow/task/registry";
 
 const nodeTypes = {
   FlowScrapeNode: NodeComponent,
@@ -39,7 +41,7 @@ const fitViewOptions = { padding: 1 };
 const FlowEditor = ({ workflow }: { workflow: Workflow }) => {
   const [nodes, setNodes, onNodesChange] = useNodesState<IWorkflowNode>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
-  const { setViewport, screenToFlowPosition } = useReactFlow();
+  const { setViewport, screenToFlowPosition, updateNodeData } = useReactFlow();
 
   useEffect(() => {
     if (nodes.length > 0 || edges.length > 0) return;
@@ -92,8 +94,54 @@ const FlowEditor = ({ workflow }: { workflow: Workflow }) => {
   const onConnect = React.useCallback(
     (connection: Connection) => {
       setEdges((eds) => addEdge({ ...connection, animated: true }, eds));
+
+      if (!connection.targetHandle) return;
+
+      const node = nodes.find((n) => n.id === connection.target);
+      if (!node) return;
+
+      const nodeInputs = node.data.inputs;
+      updateNodeData(node.id, {
+        inputs: {
+          ...nodeInputs,
+          [connection.targetHandle]: "",
+        },
+      });
     },
-    [setEdges],
+    [setEdges, updateNodeData, nodes],
+  );
+
+  const isValidConnection = React.useCallback(
+    (connection: Edge | Connection) => {
+      // self connection
+      if (connection.source === connection.target) return false;
+
+      const sourceNode = nodes.find((node) => node.id === connection.source);
+      const targetNode = nodes.find((node) => node.id === connection.target);
+      if (!sourceNode || !targetNode) return false;
+
+      const sourceTask = TaskRegistry[sourceNode.data.type];
+      const targetTask = TaskRegistry[targetNode.data.type];
+
+      const output = sourceTask.outputs.find(
+        (output) => output.name === connection.sourceHandle,
+      );
+      const input = targetTask.inputs.find(
+        (input) => input.name === connection.targetHandle,
+      );
+      const hasCycle = (node: IWorkflowNode, visited = new Set()) => {
+        if (visited.has(node.id)) return false;
+        visited.add(node.id);
+
+        for (const outgoer of getOutgoers(node, nodes, edges)) {
+          if (outgoer.id === connection.source) return true;
+          if (hasCycle(outgoer, visited)) return true;
+        }
+      };
+
+      return input?.type === output?.type && !hasCycle(targetNode);
+    },
+    [nodes, edges],
   );
 
   return (
@@ -112,6 +160,7 @@ const FlowEditor = ({ workflow }: { workflow: Workflow }) => {
         onDragOver={onDragOver}
         onDrop={onDrop}
         onConnect={onConnect}
+        isValidConnection={isValidConnection}
       >
         <Controls position="top-left" fitViewOptions={fitViewOptions} />
         <Background variant={BackgroundVariant.Dots} gap={EDITOR_GAPS} />

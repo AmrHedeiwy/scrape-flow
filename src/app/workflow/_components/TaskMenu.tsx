@@ -23,6 +23,7 @@ const TaskMenu = () => {
           <AccordionTrigger className="font-bold">Extraction</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-1">
             <TaskMenuButton type={TaskType.PAGE_TO_HTML} />
+            <TaskMenuButton type={TaskType.EXTRACT_TEXT_FROM_ELEMENT} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>
