@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 
 import { useRouter } from "next/navigation";
 import SaveButton from "./SaveButton";
+import ExecuteButton from "./ExecuteButton";
 
 interface ITopbarProps {
   title: string;
@@ -39,6 +40,7 @@ const Topbar = ({ title, subtitle, workflowId }: ITopbarProps) => {
         </div>
       </div>
       <div className="flex flex-1 justify-end gap-1">
+        <ExecuteButton workflowId={workflowId} />
         <SaveButton workflowId={workflowId} />
       </div>
     </header>
