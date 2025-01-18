@@ -1,6 +1,9 @@
-import { cn } from "@/lib/utils";
-import { useReactFlow } from "@xyflow/react";
 import React from "react";
+
+import { cn } from "@/lib/utils";
+
+import { useReactFlow } from "@xyflow/react";
+import { useFlowValidation } from "@/components/hooks/use-flow-validation";
 
 const NodeCard = ({
   nodeId,
@@ -11,6 +14,11 @@ const NodeCard = ({
   isSelected: boolean;
 } & React.PropsWithChildren) => {
   const { getNode, setCenter } = useReactFlow();
+
+  const { invalidInputs } = useFlowValidation();
+  const hasInvalidInputs = invalidInputs.some(
+    (input) => input.nodeId === nodeId,
+  );
 
   return (
     <div
@@ -33,6 +41,7 @@ const NodeCard = ({
         "flex w-[420px] border-separate cursor-pointer flex-col gap-1 rounded-md border-2 bg-background text-xs",
         {
           "border-primary": isSelected,
+          "border-2 border-destructive": hasInvalidInputs,
         },
       )}
     >

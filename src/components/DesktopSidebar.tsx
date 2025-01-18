@@ -10,7 +10,7 @@ import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import Logo from "./Logo";
 
-import { useActiveRoute } from "@/hooks/use-active-route";
+import { useActiveRoute } from "@/components/hooks/use-active-route";
 
 const DesktopSidebar = () => {
   const activeRoute = useActiveRoute();

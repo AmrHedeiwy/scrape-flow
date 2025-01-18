@@ -1,12 +1,12 @@
-import React, { useCallback } from "react";
+import React from "react";
 
 import { ITaskParam, TaskParamType } from "@/types/task";
-
-import { useReactFlow } from "@xyflow/react";
+import { IWorkflowNode } from "@/types/workflow-node";
 
 import StringParam from "./param/StringParam";
-import { IWorkflowNode } from "@/types/workflow-node";
 import BrowserInstanceParam from "./param/BrowserInstanceParam";
+
+import { useReactFlow } from "@xyflow/react";
 
 const NodeParamField = ({
   param,
@@ -22,7 +22,7 @@ const NodeParamField = ({
   const node = getNode(nodeId) as IWorkflowNode | undefined;
   const value = node?.data.inputs?.[param.name];
 
-  const updateNodeParamValue = useCallback(
+  const updateNodeParamValue = React.useCallback(
     (value: string) => {
       updateNodeData(nodeId, {
         inputs: {

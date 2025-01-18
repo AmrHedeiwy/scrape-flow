@@ -2,7 +2,7 @@ import { TaskType } from "@/types/task";
 import { IWorkflowNode } from "@/types/workflow-node";
 
 export const CreateFlowNode = (
-  nodetType: TaskType,
+  nodeType: TaskType,
   position?: { x: number; y: number },
 ): IWorkflowNode => {
   return {
@@ -10,7 +10,7 @@ export const CreateFlowNode = (
     type: "FlowScrapeNode",
     dragHandle: ".drag-handle",
     data: {
-      type: nodetType,
+      type: nodeType,
       inputs: {},
     },
     position: position ?? {

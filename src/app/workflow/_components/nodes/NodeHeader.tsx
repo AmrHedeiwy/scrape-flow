@@ -2,15 +2,19 @@
 
 import React from "react";
 
-import { TaskRegistry } from "@/lib/workflow/task/registry";
+import { IWorkflowNode } from "@/types/workflow-node";
 import { TaskType } from "@/types/task";
+
+import { CoinsIcon, CopyIcon, GripVerticalIcon, TrashIcon } from "lucide-react";
+
+import { TaskRegistry } from "@/lib/workflow/task/registry";
+import { CreateFlowNode } from "@/lib/workflow/create-flow-node";
+
 import { ICON_SIZE } from "@/constants/icon-size";
 import { Badge } from "@/components/ui/badge";
-import { CoinsIcon, CopyIcon, GripVerticalIcon, TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
 import { useReactFlow } from "@xyflow/react";
-import { CreateFlowNode } from "@/lib/workflow/create-flow-node";
-import { IWorkflowNode } from "@/types/workflow-node";
 
 const NodeHeader = ({
   taskType,

@@ -1,11 +1,12 @@
 import React, { useId } from "react";
 
-import { IParamProps } from "@/types/task";
+import { IParamProps } from "@/types/workflow-node";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useInternalValue } from "@/app/workflow/_hooks/useInternalValue";
 import { Textarea } from "@/components/ui/textarea";
+
+import { useInternalValue } from "@/app/workflow/_components/hooks/useInternalValue";
 
 const StringParam = ({
   param,

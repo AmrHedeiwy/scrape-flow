@@ -1,5 +1,5 @@
 import React from "react";
-import { useActiveRoute } from "@/hooks/use-active-route";
+import { useActiveRoute } from "@/components/hooks/use-active-route";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Button, buttonVariants } from "./ui/button";
 import { MenuIcon } from "lucide-react";

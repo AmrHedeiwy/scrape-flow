@@ -17,10 +17,3 @@ export interface ITaskParam {
   hideHandle?: boolean;
   [key: string]: any;
 }
-
-export interface IParamProps {
-  param: ITaskParam;
-  value: string;
-  updateNodeParamValue: (newValue: string) => void;
-  disabled?: boolean;
-}
