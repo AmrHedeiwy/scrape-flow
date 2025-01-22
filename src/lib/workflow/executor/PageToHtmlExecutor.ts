@@ -10,8 +10,8 @@ export const PageToHtmlExecutor = async (
     environment.setOutput("Html", html);
 
     return true;
-  } catch (error) {
-    console.error("Error page to html executor", error);
+  } catch (error: any) {
+    environment.log.error(error.message);
     return false;
   }
 };

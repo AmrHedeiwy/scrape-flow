@@ -14,6 +14,8 @@ import { TEnvironment, TExecutionEnvironment } from "@/types/executor";
 import { TaskParamType } from "@/types/task";
 import { Browser, Page } from "puppeteer";
 import { Edge } from "@xyflow/react";
+import { TLogCollector } from "@/types/log";
+import { createLogCollector } from "../log";
 
 export const ExecuteWorkflow = async (executionId: string) => {
   const execution = await prisma.workflowExecution.findUnique({
@@ -54,7 +56,6 @@ export const ExecuteWorkflow = async (executionId: string) => {
     executionFailed,
     creditsConsumed,
   );
-  // clean up environment
 
   await cleanUpEnvironment(environment);
   revalidatePath("/workflow/runs");
@@ -150,6 +151,7 @@ const executeWorkflowPhase = async (
   environment: TEnvironment,
   edges: Edge[],
 ) => {
+  const logCollector = createLogCollector();
   const started = new Date();
   const node = JSON.parse(phase.node) as IWorkflowNode;
 
@@ -168,10 +170,10 @@ const executeWorkflowPhase = async (
 
   const creditsRequired = TaskRegistry[node.data.type].credits;
 
-  const success = await executePhase(phase, node, environment);
+  const success = await executePhase(phase, node, environment, logCollector);
 
   const outputs = environment.phases[node.id].outputs;
-  await finalizePhase(phase.id, success, outputs);
+  await finalizePhase(phase.id, success, outputs, logCollector);
   return { success };
 };
 
@@ -179,6 +181,7 @@ const finalizePhase = async (
   phaseId: string,
   success: boolean,
   outputs: any,
+  logCollector: TLogCollector,
 ) => {
   const finalStatus = success
     ? ExecutionpPhaseStatus.COMPLETED
@@ -192,6 +195,15 @@ const finalizePhase = async (
       status: finalStatus,
       completedAt: new Date(),
       outputs: JSON.stringify(outputs),
+      logs: {
+        createMany: {
+          data: logCollector.getAll().map((log) => ({
+            message: log.message,
+            logLevel: log.level,
+            timestamp: log.timestamp,
+          })),
+        },
+      },
     },
   });
 };
@@ -200,13 +212,13 @@ const executePhase = async (
   phase: ExecutionPhase,
   node: IWorkflowNode,
   environment: TEnvironment,
+  logCollector: TLogCollector,
 ): Promise<boolean> => {
   const runFn = ExecutorRegistry[node.data.type];
-
   if (!runFn) return false;
 
   const executionEnvironment: TExecutionEnvironment<any> =
-    createExecutionEnvironment(node, environment);
+    createExecutionEnvironment(node, environment, logCollector);
 
   return await runFn(executionEnvironment);
 };
@@ -252,6 +264,7 @@ const setupEnvironmentForPhase = (
 export const createExecutionEnvironment = (
   node: IWorkflowNode,
   environment: TEnvironment,
+  logCollector: TLogCollector,
 ): TExecutionEnvironment<any> => {
   return {
     getInput: (name: string) => environment.phases[node.id]?.inputs[name],
@@ -264,6 +277,8 @@ export const createExecutionEnvironment = (
 
     getPage: () => environment.page,
     setPage: (page: Page) => (environment.page = page),
+
+    log: logCollector,
   };
 };
 

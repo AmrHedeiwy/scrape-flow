@@ -1,5 +1,7 @@
 import { Browser, Page } from "puppeteer";
+
 import { TWorkflowTask } from "./workflow";
+import { TLogCollector } from "./log";
 
 export type TEnvironment = {
   browser?: Browser;
@@ -22,4 +24,6 @@ export type TExecutionEnvironment<T extends TWorkflowTask> = {
 
   getPage(): Page | undefined;
   setPage(page: Page): void;
+
+  log: TLogCollector;
 };

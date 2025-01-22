@@ -18,8 +18,8 @@ export const LaunchBrowserExecutor = async (
     environment.setPage(page);
 
     return true;
-  } catch (error) {
-    console.error("Error launching browser:", error);
+  } catch (error: any) {
+    environment.log.error(error.message);
     return false;
   }
 };
