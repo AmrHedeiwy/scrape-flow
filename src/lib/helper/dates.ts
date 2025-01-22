@@ -17,5 +17,7 @@ export const DatesToDurationString = (
     end: timeElapsed,
   });
 
-  return `${duration.minutes || 0}m ${duration.seconds || 0}s`;
+  if (duration.minutes && duration.minutes > 0)
+    return `${duration.minutes || 0}m ${duration.seconds || 0}s`;
+  return `${duration.seconds || 0}s`;
 };

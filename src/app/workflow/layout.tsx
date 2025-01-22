@@ -1,8 +1,11 @@
+import React, { PropsWithChildren } from "react";
+
+import { ICON_SIZE } from "@/constants/icon-size";
+
 import Logo from "@/components/Logo";
 import { ThemeModeToggle } from "@/components/ThemeModeToggle";
+
 import { Separator } from "@/components/ui/separator";
-import { ICON_SIZE } from "@/constants/icon-size";
-import React, { PropsWithChildren } from "react";
 
 const Layout = ({ children }: PropsWithChildren) => {
   return (
