@@ -7,7 +7,7 @@ import {
   TWorkflowNodeMissingInputs,
 } from "@/types/workflow-node";
 
-import { Edge, getIncomers } from "@xyflow/react";
+import { Edge } from "@xyflow/react";
 import { TaskRegistry } from "./task/registry";
 
 export enum FlowToExecutionPlanValidationError {
@@ -108,9 +108,7 @@ const getInvalidInputs = (
 
   for (const input of inputs) {
     const inputValue = node.data.inputs[input.name];
-    const inputValueProvided = inputValue?.length > 0;
-
-    if (inputValueProvided) continue; // input is fine
+    if (inputValue?.length > 0) continue; // input is fine
 
     const incomingEdges = edges.filter((edge) => edge.target === node.id);
     const inputLinkedToOutput = incomingEdges.find(
@@ -134,4 +132,21 @@ const getInvalidInputs = (
   }
 
   return invalidInputs;
+};
+
+const getIncomers = (
+  node: IWorkflowNode,
+  nodes: IWorkflowNode[],
+  edges: Edge[],
+) => {
+  if (!node.id) return [];
+
+  const incomersIds = new Set();
+  for (const edge of edges) {
+    if (edge.target === node.id) {
+      incomersIds.add(edge.source);
+    }
+  }
+
+  return nodes.filter((node) => incomersIds.has(node.id));
 };

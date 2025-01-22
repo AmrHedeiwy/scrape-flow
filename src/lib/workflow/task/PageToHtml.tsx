@@ -2,7 +2,7 @@ import { TaskParamType, TaskType } from "@/types/task";
 import { TWorkflowTask } from "@/types/workflow";
 import { CodeIcon, LucideProps } from "lucide-react";
 
-export const PageToHtml = {
+export const PageToHtmlTask = {
   type: TaskType.PAGE_TO_HTML,
   label: "Get html from page",
   icon: (props: LucideProps) => (
@@ -16,7 +16,7 @@ export const PageToHtml = {
       type: TaskParamType.BROSWER_INSTANCE,
       required: true,
     },
-  ],
+  ] as const,
   outputs: [
     {
       name: "Html",
@@ -26,5 +26,5 @@ export const PageToHtml = {
       name: "Web Page",
       type: TaskParamType.BROSWER_INSTANCE,
     },
-  ],
+  ] as const,
 } satisfies TWorkflowTask;
