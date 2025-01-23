@@ -37,7 +37,7 @@ export enum WorkflowExecutionTrigger {
   SCHEDULED = "SCHEDULED",
 }
 
-export enum ExecutionpPhaseStatus {
+export enum ExecutionPhaseStatus {
   CREATED = "CREATED",
   PENDING = "PENDING",
   RUNNING = "RUNNING",

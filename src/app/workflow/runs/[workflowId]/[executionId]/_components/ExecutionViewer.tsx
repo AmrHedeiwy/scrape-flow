@@ -7,7 +7,7 @@ import { GetWorkflowExecutionWithPhase } from "@/actions/getWorkflowExecutionWit
 import { ICON_SIZE } from "@/constants/icon-size";
 
 import {
-  ExecutionpPhaseStatus,
+  ExecutionPhaseStatus,
   WorkflowExecutionStatus,
 } from "@/types/workflow";
 import {
@@ -30,6 +30,7 @@ import { GetWorkflowPhaseDetails } from "@/actions/getWorkflowPhaseDetails";
 import ParamterViewer from "./ParamterViewer";
 import LogViewer from "./LogViewer";
 import PhaseStatusBadge from "./PhaseStatusBadge";
+import ReactCountupWrapper from "@/components/ReactCountupWrapper";
 
 type TExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhase>>;
 
@@ -77,7 +78,14 @@ const ExecutionViewer = ({ initialData }: { initialData: TExecutionData }) => {
           <ExecutionLabel
             label="Status"
             icon={CircleDashed}
-            value={data?.status}
+            value={
+              <div className="flex items-center gap-2 font-semibold capitalize">
+                <PhaseStatusBadge
+                  status={data?.status as ExecutionPhaseStatus}
+                />
+                <span>{data?.status}</span>
+              </div>
+            }
           />
           <ExecutionLabel
             label="Started at"
@@ -105,7 +113,7 @@ const ExecutionViewer = ({ initialData }: { initialData: TExecutionData }) => {
           <ExecutionLabel
             label="Credits consumed"
             icon={Coins}
-            value={creditsConsumed}
+            value={<ReactCountupWrapper value={creditsConsumed} />}
           />
 
           <Separator />
@@ -136,7 +144,7 @@ const ExecutionViewer = ({ initialData }: { initialData: TExecutionData }) => {
                   <p className="font-semibold">{phase.name}</p>
                 </div>
                 <PhaseStatusBadge
-                  status={phase.status as ExecutionpPhaseStatus}
+                  status={phase.status as ExecutionPhaseStatus}
                 />
               </Button>
             ))}
@@ -172,6 +180,7 @@ const ExecutionViewer = ({ initialData }: { initialData: TExecutionData }) => {
                   />
                   <span>Credits</span>
                 </div>
+                <span>{phaseDetails.data.creditsConsumed}</span>
               </Badge>
 
               <Badge variant="outline" className="space-x-4">

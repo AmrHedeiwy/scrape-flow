@@ -11,6 +11,7 @@ import { buttonVariants } from "./ui/button";
 import Logo from "./Logo";
 
 import { useActiveRoute } from "@/components/hooks/use-active-route";
+import UserAvailableCreditsBadge from "./UserAvailableCreditsBadge";
 
 const DesktopSidebar = () => {
   const activeRoute = useActiveRoute();
@@ -24,7 +25,9 @@ const DesktopSidebar = () => {
       <div className="flex border-separate items-center justify-center gap-2 border-b-[1px] p-4 ">
         <Logo />
       </div>
-      <div className="p-2">TODO CREDITS</div>
+      <div className="p-2">
+        <UserAvailableCreditsBadge />
+      </div>
       <div className="flex flex-col p-2">
         {ROUTES.map(({ href, icon: Icon, label }) => (
           <Link

@@ -7,6 +7,7 @@ import Logo from "./Logo";
 import Link from "next/link";
 import { ROUTES } from "@/constants/routes";
 import { ICON_SIZE } from "@/constants/icon-size";
+import UserAvailableCreditsBadge from "./UserAvailableCreditsBadge";
 
 const MobileSidebar = () => {
   const activeRoute = useActiveRoute();
@@ -27,6 +28,7 @@ const MobileSidebar = () => {
             side="left"
           >
             <Logo />
+            <UserAvailableCreditsBadge />
             <div className="flex flex-col">
               {ROUTES.map(({ href, icon: Icon, label }) => (
                 <Link

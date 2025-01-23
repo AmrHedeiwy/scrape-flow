@@ -5,10 +5,11 @@ import prisma from "@/lib/primsa";
 
 import { FlowToExecutionPlan } from "@/lib/workflow/execution-plan";
 import {
-  ExecutionpPhaseStatus,
+  ExecutionPhaseStatus,
   TWorkflowExecutionPlan,
   WorkflowExecutionStatus,
   WorkflowExecutionTrigger,
+  WorkflowStatus,
 } from "@/types/workflow";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
 import { redirect } from "next/navigation";
@@ -35,16 +36,23 @@ export const RunWorkflow = async (form: {
   if (!workflow) throw new Error("Workflow not found");
 
   let executionPlan: TWorkflowExecutionPlan;
-  if (!flowDefinition) throw new Error("Flow definition is required");
+  if (workflow.status === WorkflowStatus.PUBLISHED) {
+    if (!workflow.executionPlan)
+      throw new Error("no execution plan found in published workflow");
+    executionPlan = JSON.parse(workflow.executionPlan);
+  } else {
+    // workflow is draft
+    if (!flowDefinition) throw new Error("Flow definition is required");
 
-  const flow = JSON.parse(flowDefinition);
-  const result = FlowToExecutionPlan(flow.nodes, flow.edges);
+    const flow = JSON.parse(flowDefinition);
+    const result = FlowToExecutionPlan(flow.nodes, flow.edges);
 
-  if (result.error) throw new Error("Flow definition is invalid");
+    if (result.error) throw new Error("Flow definition is invalid");
 
-  if (!result.executionPlan) throw new Error("No execution plan generated");
+    if (!result.executionPlan) throw new Error("No execution plan generated");
 
-  executionPlan = result.executionPlan;
+    executionPlan = result.executionPlan;
+  }
 
   const execution = await prisma.workflowExecution.create({
     data: {
@@ -58,7 +66,7 @@ export const RunWorkflow = async (form: {
         create: executionPlan.flatMap((phase) => {
           return phase.nodes.flatMap((node) => ({
             userId,
-            status: ExecutionpPhaseStatus.CREATED,
+            status: ExecutionPhaseStatus.CREATED,
             number: phase.phase,
             node: JSON.stringify(node),
             name: TaskRegistry[node.data.type].label,

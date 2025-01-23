@@ -1,20 +1,22 @@
 import "server-only";
+
 import prisma from "../primsa";
+
 import { revalidatePath } from "next/cache";
 import {
-  ExecutionpPhaseStatus,
+  ExecutionPhaseStatus,
   WorkflowExecutionStatus,
 } from "@/types/workflow";
-import { ExecutionPhase, Prisma } from "@prisma/client";
-import { waitFor } from "../helper/waitFor";
 import { IWorkflowNode } from "@/types/workflow-node";
-import { TaskRegistry } from "./task/registry";
-import { ExecutorRegistry } from "./executor/registry";
+import { TLogCollector } from "@/types/log";
 import { TEnvironment, TExecutionEnvironment } from "@/types/executor";
 import { TaskParamType } from "@/types/task";
+
+import { ExecutionPhase, Prisma } from "@prisma/client";
+import { TaskRegistry } from "./task/registry";
+import { ExecutorRegistry } from "./executor/registry";
 import { Browser, Page } from "puppeteer";
 import { Edge } from "@xyflow/react";
-import { TLogCollector } from "@/types/log";
 import { createLogCollector } from "../log";
 
 export const ExecuteWorkflow = async (executionId: string) => {
@@ -43,7 +45,10 @@ export const ExecuteWorkflow = async (executionId: string) => {
       phase,
       environment,
       edges,
+      execution.userId,
     );
+    creditsConsumed += phaseExecution.creditsConsumed;
+
     if (!phaseExecution.success) {
       executionFailed = true;
       break;
@@ -102,7 +107,7 @@ const initializePhaseStatuses = async (
       },
     },
     data: {
-      status: ExecutionpPhaseStatus.PENDING,
+      status: ExecutionPhaseStatus.PENDING,
     },
   });
 };
@@ -150,6 +155,7 @@ const executeWorkflowPhase = async (
   phase: ExecutionPhase,
   environment: TEnvironment,
   edges: Edge[],
+  userId: string,
 ) => {
   const logCollector = createLogCollector();
   const started = new Date();
@@ -162,7 +168,7 @@ const executeWorkflowPhase = async (
       id: phase.id,
     },
     data: {
-      status: ExecutionpPhaseStatus.RUNNING,
+      status: ExecutionPhaseStatus.RUNNING,
       startedAt: started,
       inputs: JSON.stringify(environment.phases[node.id].inputs),
     },
@@ -170,11 +176,22 @@ const executeWorkflowPhase = async (
 
   const creditsRequired = TaskRegistry[node.data.type].credits;
 
-  const success = await executePhase(phase, node, environment, logCollector);
+  let success = await decrementCredits(userId, creditsRequired, logCollector);
+  const creditsConsumed = success ? creditsRequired : 0;
+  if (success) {
+    // execute phase if credits are sufficient
+    success = await executePhase(phase, node, environment, logCollector);
+  }
 
   const outputs = environment.phases[node.id].outputs;
-  await finalizePhase(phase.id, success, outputs, logCollector);
-  return { success };
+  await finalizePhase(
+    phase.id,
+    success,
+    outputs,
+    logCollector,
+    creditsConsumed,
+  );
+  return { success, creditsConsumed };
 };
 
 const finalizePhase = async (
@@ -182,10 +199,11 @@ const finalizePhase = async (
   success: boolean,
   outputs: any,
   logCollector: TLogCollector,
+  creditsConsumed: number,
 ) => {
   const finalStatus = success
-    ? ExecutionpPhaseStatus.COMPLETED
-    : ExecutionpPhaseStatus.FAILED;
+    ? ExecutionPhaseStatus.COMPLETED
+    : ExecutionPhaseStatus.FAILED;
 
   await prisma.executionPhase.update({
     where: {
@@ -195,6 +213,7 @@ const finalizePhase = async (
       status: finalStatus,
       completedAt: new Date(),
       outputs: JSON.stringify(outputs),
+      creditsConsumed,
       logs: {
         createMany: {
           data: logCollector.getAll().map((log) => ({
@@ -287,5 +306,29 @@ const cleanUpEnvironment = async (environment: TEnvironment) => {
     await environment.browser
       .close()
       .catch((err) => console.error("Error closing browser", err));
+  }
+};
+
+const decrementCredits = async (
+  userId: string,
+  amount: number,
+  logCollector: TLogCollector,
+) => {
+  try {
+    await prisma.userBalance.update({
+      where: {
+        userId,
+        credits: { gte: amount },
+      },
+      data: {
+        credits: {
+          decrement: amount,
+        },
+      },
+    });
+    return true;
+  } catch (error) {
+    logCollector.error("insufficient balance");
+    return false;
   }
 };
