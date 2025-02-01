@@ -8,7 +8,7 @@ export const DeleteWorkflow = async (id: string) => {
   const { userId } = auth();
 
   if (!userId) {
-    throw new Error("Unauthorized");
+    throw new Error("Unauthenticated user");
   }
 
   await prisma.workflow.delete({

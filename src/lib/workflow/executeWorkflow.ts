@@ -19,7 +19,10 @@ import { Browser, Page } from "puppeteer";
 import { Edge } from "@xyflow/react";
 import { createLogCollector } from "../log";
 
-export const ExecuteWorkflow = async (executionId: string) => {
+export const ExecuteWorkflow = async (
+  executionId: string,
+  nextRunAt?: Date,
+) => {
   const execution = await prisma.workflowExecution.findUnique({
     where: {
       id: executionId,
@@ -35,7 +38,11 @@ export const ExecuteWorkflow = async (executionId: string) => {
 
   const environment = { phases: {} };
 
-  await initializeWorkflowExecution(executionId, execution.workflowId);
+  await initializeWorkflowExecution(
+    executionId,
+    execution.workflowId,
+    nextRunAt,
+  );
   await initializePhaseStatuses(execution);
 
   let creditsConsumed = 0;
@@ -69,6 +76,7 @@ export const ExecuteWorkflow = async (executionId: string) => {
 const initializeWorkflowExecution = async (
   executionId: string,
   workflowId: string,
+  nextRunAt?: Date,
 ) => {
   await prisma.workflowExecution.update({
     where: {
@@ -88,6 +96,7 @@ const initializeWorkflowExecution = async (
       lastRunAt: new Date(),
       lastRunStatus: WorkflowExecutionStatus.RUNNING,
       lastRunId: executionId,
+      ...(nextRunAt && { nextRunAt }),
     },
   });
 };
@@ -234,7 +243,10 @@ const executePhase = async (
   logCollector: TLogCollector,
 ): Promise<boolean> => {
   const runFn = ExecutorRegistry[node.data.type];
-  if (!runFn) return false;
+  if (!runFn) {
+    logCollector.error(`not found executor for task ${node.data.type}`);
+    return false;
+  }
 
   const executionEnvironment: TExecutionEnvironment<any> =
     createExecutionEnvironment(node, environment, logCollector);

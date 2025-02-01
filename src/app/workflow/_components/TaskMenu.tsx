@@ -17,13 +17,40 @@ const TaskMenu = () => {
       <Accordion
         type="multiple"
         className="w-full"
-        defaultValue={["extraction"]}
+        defaultValue={["interactions", "extraction", "timing", "results"]}
       >
+        <AccordionItem value="interactions">
+          <AccordionTrigger className="font-bold">
+            User interactions
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuButton type={TaskType.FILL_INPUT} />
+            <TaskMenuButton type={TaskType.CLICK_ELEMENT} />
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value="extraction">
-          <AccordionTrigger className="font-bold">Extraction</AccordionTrigger>
+          <AccordionTrigger className="font-bold">
+            Data extraction
+          </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-1">
             <TaskMenuButton type={TaskType.PAGE_TO_HTML} />
             <TaskMenuButton type={TaskType.EXTRACT_TEXT_FROM_ELEMENT} />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="timing">
+          <AccordionTrigger className="font-bold">
+            Timing controls
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuButton type={TaskType.WAIT_FOR_ELEMENT} />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="results">
+          <AccordionTrigger className="font-bold">
+            Result delivery
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuButton type={TaskType.DELIVER_VIA_WEBHOOK} />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

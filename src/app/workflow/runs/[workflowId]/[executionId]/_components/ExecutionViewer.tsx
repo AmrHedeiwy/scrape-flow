@@ -45,7 +45,7 @@ const ExecutionViewer = ({ initialData }: { initialData: TExecutionData }) => {
   });
 
   const phaseDetails = useQuery({
-    queryKey: ["phaseDetails", selectedPhase],
+    queryKey: ["phaseDetails", selectedPhase, data?.status],
     enabled: selectedPhase != null,
     queryFn: () => GetWorkflowPhaseDetails(selectedPhase!),
   });

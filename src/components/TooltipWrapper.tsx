@@ -17,6 +17,8 @@ const TooltipWrapper = ({
   side = "top",
   children,
 }: TooltipWrapperProps) => {
+  if (!content) return children;
+
   return (
     <TooltipProvider delayDuration={100}>
       <Tooltip>
