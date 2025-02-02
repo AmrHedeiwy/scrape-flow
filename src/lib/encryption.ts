@@ -1,6 +1,8 @@
+import "server-only";
+
 import crypto from "crypto";
 
-const ALG = "aes-256-cbc"; // key length is 32 bytes
+const ALG = "aes-256-cbc" as const; // key length is 32 bytes
 // openssl rand -hex 32
 
 export const symmtericEncrypt = (data: string) => {

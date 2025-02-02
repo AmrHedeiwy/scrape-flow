@@ -3,9 +3,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ICON_SIZE } from "@/constants/icon-size";
-import { Shield, ShieldOff } from "lucide-react";
+import { LockKeyhole, Shield, ShieldOff } from "lucide-react";
 import React, { Suspense } from "react";
-import CreateCredentialsDialog from "./_components/CreateCredentialsDialog";
+import CreateCredentialDialog from "./_components/CreateCredentialDialog";
+import { formatDistanceToNow } from "date-fns";
+import DeleteCredentialDialog from "./_components/DeleteCredentialDialog";
 
 const CredentialsPage = () => {
   return (
@@ -15,7 +17,7 @@ const CredentialsPage = () => {
           <h1 className="text-3xl font-bold">Credentials</h1>
           <p className="text-muted-foreground">Manage your credentials</p>
         </div>
-        <CreateCredentialsDialog />
+        <CreateCredentialDialog />
       </div>
 
       <div className="h-full space-y-8 py-6">
@@ -53,12 +55,35 @@ const UserCredentials = async () => {
               Click the button below to create your first credential
             </p>
           </div>
-          <CreateCredentialsDialog triggerText="Create your first credential" />
+          <CreateCredentialDialog triggerText="Create your first credential" />
         </div>
       </Card>
     );
 
-  return <div></div>;
+  return (
+    <div>
+      {credentials.map((credential) => {
+        const createdAt = formatDistanceToNow(credential.createdAt, {
+          addSuffix: true,
+        });
+
+        return (
+          <Card key={credential.id} className="flex w-full justify-between p-4">
+            <div className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                <LockKeyhole size={ICON_SIZE.S} className="stroke-primary" />
+              </div>
+              <div>
+                <p className="font-bold">{credential.name}</p>
+                <p className="text-xs text-muted-foreground">{createdAt}</p>
+              </div>
+            </div>
+            <DeleteCredentialDialog name={credential.name} />
+          </Card>
+        );
+      })}
+    </div>
+  );
 };
 
 export default CredentialsPage;
