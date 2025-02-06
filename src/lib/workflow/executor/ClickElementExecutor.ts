@@ -1,6 +1,5 @@
 import { TExecutionEnvironment } from "@/types/executor";
 import { ClickElementTask } from "../task/ClickElement";
-import { waitFor } from "@/lib/helper/waitFor";
 
 export const ClickElementExecutor = async (
   environment: TExecutionEnvironment<typeof ClickElementTask>,

@@ -11,6 +11,8 @@ import { WaitForElementExecutor } from "./WaitForElementExecutor";
 import { DeliverViaWebhookExecutor } from "./DeliverViaWebhookExecutor";
 import { ExtractDataWithAIExecutor } from "./ExtractDataWithAIExecutor";
 import { ReadPropertyFromJsonExecutor } from "./ReadPropertyFromJsonExecutor";
+import { AddPropertyFromJsonExecutor } from "./AddPropertyFromJsonExecutor";
+import { NavigateUrlExecutorExecutor } from "./NavigateUrlExecutor";
 
 type TExecutorFn<T extends TWorkflowTask> = (
   environment: TExecutionEnvironment<T>,
@@ -30,4 +32,6 @@ export const ExecutorRegistry: TExecutionRegistry = {
   DELIVER_VIA_WEBHOOK: DeliverViaWebhookExecutor,
   EXTRACT_DATA_WITH_AI: ExtractDataWithAIExecutor,
   READ_PROPERTY_FROM_JSON: ReadPropertyFromJsonExecutor,
+  ADD_PROPERTY_TO_JSON: AddPropertyFromJsonExecutor,
+  NAVIGATE_URL: NavigateUrlExecutorExecutor,
 };

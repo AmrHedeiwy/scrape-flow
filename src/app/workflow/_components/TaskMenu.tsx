@@ -32,6 +32,7 @@ const TaskMenu = () => {
           <AccordionContent className="flex flex-col gap-1">
             <TaskMenuButton type={TaskType.FILL_INPUT} />
             <TaskMenuButton type={TaskType.CLICK_ELEMENT} />
+            <TaskMenuButton type={TaskType.NAVIGATE_URL} />
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="extraction">
@@ -50,6 +51,7 @@ const TaskMenu = () => {
           </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-1">
             <TaskMenuButton type={TaskType.READ_PROPERTY_FROM_JSON} />
+            <TaskMenuButton type={TaskType.ADD_PROPERTY_TO_JSON} />
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="timing">

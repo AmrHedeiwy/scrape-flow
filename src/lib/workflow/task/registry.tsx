@@ -10,6 +10,8 @@ import { WaitForElementTask } from "./WaitForElement";
 import { DeliverViaWebhookTask } from "./DeliverViaWebhook";
 import { ExtractDataWithAITask } from "./ExtractDataWithAI";
 import { ReadPropertyFromJsonTask } from "./ReadPropertyFromJson";
+import { AddPropertyFromJsonTask } from "./AddPropertyFromJson";
+import { NavigateUrlTask } from "./NavigateUrl";
 
 type TTaskRegistry = {
   [K in TaskType]: TWorkflowTask & { type: K };
@@ -25,4 +27,6 @@ export const TaskRegistry: TTaskRegistry = {
   DELIVER_VIA_WEBHOOK: DeliverViaWebhookTask,
   EXTRACT_DATA_WITH_AI: ExtractDataWithAITask,
   READ_PROPERTY_FROM_JSON: ReadPropertyFromJsonTask,
+  ADD_PROPERTY_TO_JSON: AddPropertyFromJsonTask,
+  NAVIGATE_URL: NavigateUrlTask,
 };
