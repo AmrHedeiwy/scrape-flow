@@ -115,40 +115,38 @@ const ExecutionViewer = ({ initialData }: { initialData: TExecutionData }) => {
             icon={Coins}
             value={<ReactCountupWrapper value={creditsConsumed} />}
           />
+        </div>
 
-          <Separator />
+        <Separator />
 
-          <div className="flex items-center justify-center px-4 py-2">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <WorkflowIcon className="stroke-muted-foreground/80" />
-              <span className="font-semibold">Phases</span>
-            </div>
+        <div className="flex items-center justify-center px-4 py-2">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <WorkflowIcon className="stroke-muted-foreground/80" />
+            <span className="font-semibold">Phases</span>
           </div>
+        </div>
 
-          <Separator />
+        <Separator />
 
-          <div className="h-full overflow-auto px-2 py-4">
-            {data?.phases.map((phase, index) => (
-              <Button
-                key={phase.id}
-                className="w-full justify-between"
-                variant={selectedPhase === phase.id ? "secondary" : "ghost"}
-                onClick={() => {
-                  if (isRunning) return;
+        <div className="h-full overflow-auto px-2 py-4">
+          {data?.phases.map((phase, index) => (
+            <Button
+              key={phase.id}
+              className="w-full justify-between"
+              variant={selectedPhase === phase.id ? "secondary" : "ghost"}
+              onClick={() => {
+                if (isRunning) return;
 
-                  setSelectedPhase(phase.id);
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{index + 1}</Badge>
-                  <p className="font-semibold">{phase.name}</p>
-                </div>
-                <PhaseStatusBadge
-                  status={phase.status as ExecutionPhaseStatus}
-                />
-              </Button>
-            ))}
-          </div>
+                setSelectedPhase(phase.id);
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <Badge variant="outline">{index + 1}</Badge>
+                <p className="font-semibold">{phase.name}</p>
+              </div>
+              <PhaseStatusBadge status={phase.status as ExecutionPhaseStatus} />
+            </Button>
+          ))}
         </div>
       </aside>
       <div className="flex h-full w-full">

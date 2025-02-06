@@ -50,7 +50,7 @@ const DeletableEdge = (props: EdgeProps) => {
       <foreignObject>
         <EdgeLabelRenderer>
           <div
-            className={cn("transition-opacity duration-300", {
+            className={cn("z-50 transition-opacity duration-300", {
               "pointer-events-none opacity-0": !isHovered,
               "pointer-events-auto opacity-100": isHovered,
             })}

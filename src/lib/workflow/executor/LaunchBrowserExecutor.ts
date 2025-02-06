@@ -17,7 +17,7 @@ export const LaunchBrowserExecutor = async (
     environment.setBrowser(browser);
 
     const page = await browser.newPage();
-    await page.goto(webSiteUrl);
+    await page.goto(webSiteUrl, { waitUntil: "domcontentloaded" });
 
     environment.setPage(page);
     environment.log.info(`Opened page at ${webSiteUrl}`);
