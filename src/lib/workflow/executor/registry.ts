@@ -13,6 +13,7 @@ import { ExtractDataWithAIExecutor } from "./ExtractDataWithAIExecutor";
 import { ReadPropertyFromJsonExecutor } from "./ReadPropertyFromJsonExecutor";
 import { AddPropertyFromJsonExecutor } from "./AddPropertyFromJsonExecutor";
 import { NavigateUrlExecutorExecutor } from "./NavigateUrlExecutor";
+import { ScrollToElementExecutor } from "./ScrollToElementExecutor";
 
 type TExecutorFn<T extends TWorkflowTask> = (
   environment: TExecutionEnvironment<T>,
@@ -34,4 +35,5 @@ export const ExecutorRegistry: TExecutionRegistry = {
   READ_PROPERTY_FROM_JSON: ReadPropertyFromJsonExecutor,
   ADD_PROPERTY_TO_JSON: AddPropertyFromJsonExecutor,
   NAVIGATE_URL: NavigateUrlExecutorExecutor,
+  SCROLL_TO_ELEMENT: ScrollToElementExecutor,
 };

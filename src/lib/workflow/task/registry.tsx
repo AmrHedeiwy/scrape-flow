@@ -12,6 +12,7 @@ import { ExtractDataWithAITask } from "./ExtractDataWithAI";
 import { ReadPropertyFromJsonTask } from "./ReadPropertyFromJson";
 import { AddPropertyFromJsonTask } from "./AddPropertyFromJson";
 import { NavigateUrlTask } from "./NavigateUrl";
+import { ScrollToElementTask } from "./ScrollToElement";
 
 type TTaskRegistry = {
   [K in TaskType]: TWorkflowTask & { type: K };
@@ -29,4 +30,5 @@ export const TaskRegistry: TTaskRegistry = {
   READ_PROPERTY_FROM_JSON: ReadPropertyFromJsonTask,
   ADD_PROPERTY_TO_JSON: AddPropertyFromJsonTask,
   NAVIGATE_URL: NavigateUrlTask,
+  SCROLL_TO_ELEMENT: ScrollToElementTask,
 };

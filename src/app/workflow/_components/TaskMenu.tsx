@@ -30,9 +30,10 @@ const TaskMenu = () => {
             User interactions
           </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuButton type={TaskType.NAVIGATE_URL} />
             <TaskMenuButton type={TaskType.FILL_INPUT} />
             <TaskMenuButton type={TaskType.CLICK_ELEMENT} />
-            <TaskMenuButton type={TaskType.NAVIGATE_URL} />
+            <TaskMenuButton type={TaskType.SCROLL_TO_ELEMENT} />
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="extraction">
