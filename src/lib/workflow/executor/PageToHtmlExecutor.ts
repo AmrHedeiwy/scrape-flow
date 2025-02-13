@@ -1,7 +1,6 @@
 import { TExecutionEnvironment } from "@/types/executor";
 
 import { PageToHtmlTask } from "../task/PageToHtml";
-import { waitFor } from "@/lib/helper/waitFor";
 
 export const PageToHtmlExecutor = async (
   environment: TExecutionEnvironment<typeof PageToHtmlTask>,
