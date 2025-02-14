@@ -32,7 +32,7 @@ const DesktopSidebar = () => {
         {ROUTES.map(({ href, icon: Icon, label }) => (
           <Link
             key={href}
-            href={href}
+            href={`/${href}`}
             className={buttonVariants({
               variant:
                 activeRoute.href === href ? "sidebarItemActive" : "sidebarItem",

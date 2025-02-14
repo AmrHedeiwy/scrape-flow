@@ -48,7 +48,7 @@ const PeriodSelector = ({
         router.push(`?${params.toString()}`);
       }}
     >
-      <SelectTrigger>
+      <SelectTrigger className="w-[180px]">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

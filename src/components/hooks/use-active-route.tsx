@@ -6,7 +6,7 @@ export const useActiveRoute = () => {
   const pathname = usePathname();
 
   const activeRoute =
-    ROUTES.find(({ href }) => pathname.endsWith(href)) || ROUTES.at(0)!;
+    ROUTES.find(({ href }) => pathname.endsWith(`/${href}`)) || ROUTES.at(0)!;
 
   return activeRoute;
 };
